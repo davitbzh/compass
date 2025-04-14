@@ -290,7 +290,7 @@ VIKTIGT: Ditt svar måste vara på svenska och anpassat för medicinsk och admin
             Response from Gemini
         """
         prompt_text = self.build_prompt(query, context)
-        gemini_key = "AIzaSyDg8wwcA2X2GnQFImdkgUknNK2dn-hElF0"  # os.environ.get("GEMINI_KEY")
+        gemini_key = os.environ.get("GEMINI_KEY")
 
         if not gemini_key:
             raise ValueError("GEMINI_KEY environment variable is not set")
