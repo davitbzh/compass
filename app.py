@@ -16,7 +16,7 @@ def predict(user_query):
 
     url = "https://snurran.hops.works/hopsworks-api/api/project/2179/inference/serving/compass:predict"
     headers = {
-        "Authorization": f"ApiKey {os.environ['HOPSWORKS_API_KEY']}",
+        "Authorization": f"ApiKey {st.secrets["HOPSWORKS_API_KEY"]}",
         "Content-Type": "application/json"
     }
     data = {
