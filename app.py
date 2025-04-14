@@ -27,7 +27,7 @@ def predict(user_query):
 
         response = requests.post(url, headers=headers, data=json.dumps(data), verify=False)
 
-        return response.json()
+        return response.json()["predictions"]
     else:
         return "no api key"
 
