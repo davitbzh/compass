@@ -1,3 +1,4 @@
+import os
 import torch
 import pandas as pd
 import logging
@@ -6,8 +7,7 @@ import hopsworks
 
 from datetime import datetime
 from typing import Dict, Any, List, Tuple, Optional
-from sentence_transformers import SentenceTransformer
-from FlagEmbedding import FlagReranker
+from sentence_transformers import SentenceTransformer, CrossEncoder
 
 
 class Predict(object):
@@ -18,9 +18,8 @@ class Predict(object):
 
     # Configuration constants
     DOWNLOAD_PATH = "data"
-    RERANKER = 'BAAI/bge-reranker-large'
-    GPT_MODEL = "gpt-4o-mini-2024-07-18"
-    MODEL_SENTENCE_TRANSFORMER = 'all-MiniLM-L6-v2'
+    RERANKER = 'cross-encoder/ms-marco-TinyBERT-L-2-v2'
+    MODEL_SENTENCE_TRANSFORMER = 'paraphrase-MiniLM-L3-v2'
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
     def __init__(self):
@@ -55,20 +54,17 @@ class Predict(object):
             self.MODEL_SENTENCE_TRANSFORMER
         ).to(self.DEVICE)
 
-    def get_reranker(self, reranker_model: str) -> FlagReranker:
+    def get_reranker(self, reranker_model: str):
         """
-        Initialize and return a FlagReranker model.
+        Initialize and return a reranker model.
 
         Args:
             reranker_model: The name/path of the reranker model.
 
         Returns:
-            An initialized FlagReranker instance.
+            An initialized reranker instance.
         """
-        return FlagReranker(
-            reranker_model,
-            use_fp16=True,
-        )
+        return CrossEncoder(reranker_model)
 
     def get_source(self, neighbors: List[Tuple[str, str, int, int]]) -> str:
         """
@@ -133,7 +129,8 @@ class Predict(object):
             The top-ranked neighbor contexts after reranking.
         """
         # Compute scores for each context using the reranker
-        scores = [self.reranker.compute_score([query, context[5]]) for context in neighbors]
+        #scores = [self.reranker.compute_score([query, context[5]]) for context in neighbors]
+        scores = [self.reranker.predict([query, context[5]]) for context in neighbors]
 
         combined_data = [*zip(scores, neighbors)]
 
@@ -296,7 +293,7 @@ VIKTIGT: Ditt svar måste vara på svenska och anpassat för medicinsk och admin
             raise ValueError("GEMINI_KEY environment variable is not set")
 
         # Gemini Endpoint
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-exp-03-25:generateContent?key={gemini_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key={gemini_key}"
 
         # Gemini payload structure
         data = {
@@ -366,7 +363,7 @@ VIKTIGT: Ditt svar måste vara på svenska och anpassat för medicinsk och admin
             })
 
             # Insert the data into the feature group
-            self.feedback_fg.multi_part_insert(feedback_df)
+            #self.feedback_fg.multi_part_insert(feedback_df)
 
             self.logger.info(f"feedback_fg.insert")
 

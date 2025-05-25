@@ -4,13 +4,10 @@ import torch
 DOWNLOAD_PATH = "data"
 
 # Reranker 
-RERANKER = 'BAAI/bge-reranker-large'
-
-# GPT model:
-GPT_MODEL = "gpt-4o-mini-2024-07-18"
+RERANKER = 'cross-encoder/ms-marco-TinyBERT-L-2-v2'
 
 # The identifier of the pre-trained sentence transformer model for producing sentence embeddings.
-MODEL_SENTENCE_TRANSFORMER = 'all-MiniLM-L6-v2'
+MODEL_SENTENCE_TRANSFORMER = 'paraphrase-MiniLM-L3-v2'
 
 # The computing device to be used for model inference and training.
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"

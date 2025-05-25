@@ -16,7 +16,7 @@ def predict(user_query):
     if api_key is not None:
         st.write('⚙️ Generating Response...')
 
-        url = "https://snurran.hops.works/hopsworks-api/api/project/2179/inference/serving/compass:predict"
+        url = "https://c.app.hopsworks.ai/hopsworks-api/api/project/1234075/inference/serving/compassassitant:predict"
         headers = {
             "Authorization": f"ApiKey {api_key}",
             "Content-Type": "application/json"
@@ -42,7 +42,7 @@ def generate_feedback_id():
 
 def send_feedback(like_status, feedback_text, user_query, assistant_response):
     api_key = st.secrets["HOPSWORKS_API_KEY"]
-    url = "https://snurran.hops.works/hopsworks-api/api/project/2179/inference/serving/compass:predict"
+    url = "https://c.app.hopsworks.ai/hopsworks-api/api/project/1234075/inference/serving/compassassitant:predict"
     headers = {
         "Authorization": f"ApiKey {api_key}",
         "Content-Type": "application/json"
